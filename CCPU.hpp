@@ -4,7 +4,7 @@
 using namespace std;
 
 //------------------------<< Defining macros >>------------------------------------
-#define ERROR_DETECT(CONDITION, IN_FUNC);   \
+//#define ERROR_DETECT(CONDITION, IN_FUNC);   \
 if (!CONDITION)                             \
 {                                           \
     printf("--cpu--\n");                    \
