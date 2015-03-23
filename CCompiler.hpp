@@ -77,9 +77,10 @@ public:
 	int           read       (const char * input);
 	int           compile    ();
 	vector<int> * MashineCode();
-//private:
-	int get_reg_num (string reg);
+
     int dump();
+private:
+	int get_reg_num (string reg);
 
 	vector<string> ACMCode_;
 	vector<int>    MashineCode_;

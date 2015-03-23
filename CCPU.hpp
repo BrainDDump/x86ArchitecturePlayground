@@ -4,7 +4,7 @@
 using namespace std;
 
 //------------------------<< Defining macros >>------------------------------------
-//#define ERROR_DETECT(CONDITION, IN_FUNC);   \
+#define ERROR_DETECT(CONDITION, IN_FUNC);   \
 if (!CONDITION)                             \
 {                                           \
     printf("--cpu--\n");                    \
@@ -21,8 +21,6 @@ const int SKIP_CMD   = -1;
 const int INT_TYPE   = 1;
 const int FLOAT_TYPE = 2;
 
-
-
 //------------------------<< CPU class >>------------------------------------------
 class CCPU
 {
@@ -33,9 +31,10 @@ public:
 //------------------------<< Main execution method >>------------------------------
     int execute ();
 //------------------------<< Debug && Info >>--------------------------------------
+    int check ();
     int cpu_dump ();
 //------------------------<< Outer set methods >>----------------------------------
-    int set_Programm   (vector<int> * MashineCode);
+    int set_Cash_ptr (CCash * ptr);
     int set_Memory_ptr (CMemBlock * mem_ptr);
 private:
 //------------------------<< Mashine commands >>-----------------------------------
@@ -99,11 +98,10 @@ private:
     int IP_;
 //------------------------<< base register >>--------------------------------------
     int BPX_;
-//------------------------<< mashine code && call stack >>-------------------------
-    vector<int> Programm_;
-    CStack<int> CallStk_;
+//------------------------<< Cash (mashine code && call stack) >>------------------
+    CCash     * Cash;
 //------------------------<< memory block >>---------------------------------------
-    CMemBlock * Memory_;
+    CMemBlock * Memory;
 };
 
 //------------------------<< Setup >>----------------------------------------------
@@ -114,12 +112,12 @@ EX_(0), FX_(0),
 CMPX_(0), IP_(0),
 BPX_(0)
 {
-    Memory_ = nullptr;
+    Memory = nullptr;
 }
 
 CCPU::~CCPU ()
 {
-    Memory_ = nullptr;
+    Memory = nullptr;
 }
 
 //------------------------<< Main execution method >>------------------------------
@@ -132,7 +130,7 @@ int CCPU::execute()
 
     do
     {
-        cmd = Programm_[IP_++];
+        cmd = Cash->Programm_[IP_++];
 
         if (cmd == STOP)     continue;
         if (cmd == SKIP_CMD) continue;
@@ -148,13 +146,13 @@ int CCPU::execute()
                 }                                               \
             case(1):                                            \
                 {                                               \
-                    arg_1 = Programm_[IP_++];                   \
+                    arg_1 = Cash->Programm_[IP_++];                   \
                     break;                                      \
                 }                                               \
             case(2):                                            \
                 {                                               \
-                    arg_1 = Programm_[IP_++];                   \
-                    arg_2 = Programm_[IP_++];                   \
+                    arg_1 = Cash->Programm_[IP_++];                   \
+                    arg_2 = Cash->Programm_[IP_++];                   \
                     break;                                      \
                 }                                               \
             }                                                   \
@@ -173,6 +171,11 @@ int CCPU::execute()
 }
 
 //------------------------<< Debug && Info >>--------------------------------------
+int CCPU::check()
+{
+    
+}
+
 int CCPU::cpu_dump ()
 {
     printf("AX : %d\n", AX_);
@@ -192,23 +195,21 @@ int CCPU::cpu_dump ()
 
     printf("BPX : %d\n", BPX_);
 
-    Memory_->VarStk_.dump();
-    Memory_->ArgStk_.dump();
+    Memory->VarStk_.dump();
+    Memory->ArgStk_.dump();
     return 1;
 }
 
 //------------------------<< Outer set methods >>----------------------------------
-int CCPU::set_Programm(vector<int> * MashineCode)
+int CCPU::set_Cash_ptr(CCash * ptr)
 {
-    vector<int> &buf_vector = * MashineCode;
-
-    Programm_ = buf_vector;
+    Cash = ptr;   // assert if nullptr!!
     return 1;
 }
 
 int CCPU::set_Memory_ptr (CMemBlock * mem_ptr)
 {
-    Memory_ = mem_ptr;   // assert if nullptr!!
+    Memory = mem_ptr;   // assert if nullptr!!
     return 1;
 }
 
@@ -452,20 +453,20 @@ int CCPU::prg_jme (int arg_1)
 //------------------------<< Functions >>------------------------------------------
 int CCPU::func_call (int arg_1)
 {
-    CallStk_.push(BPX_);
-    BPX_ = Memory_->VarStk_.top();
+    Cash->CallStk_.push(BPX_);
+    BPX_ = Memory->VarStk_.top();
 
-    CallStk_.push(IP_);
+    Cash->CallStk_.push(IP_);
     IP_  = arg_1;
 
     return 1;
 }
 int CCPU::func_ret  ()
 {
-    IP_  = CallStk_.pop();
-    BPX_ = CallStk_.pop();
+    IP_  = Cash->CallStk_.pop();
+    BPX_ = Cash->CallStk_.pop();
 
-    Memory_->VarStk_.set_top(BPX_);
+    Memory->VarStk_.set_top(BPX_);
 
     return 1;
 }
@@ -474,21 +475,21 @@ int CCPU::func_ret  ()
 //------------------------<< Variables >>------------------------------------------
 int CCPU::var_dec (int arg_1, int arg_2)
 {
-    assert(Memory_->VarStk_.top() == arg_1 + BPX_);
+    assert(Memory->VarStk_.top() == arg_1 + BPX_);
 
-    Memory_->VarStk_.push(0);
+    Memory->VarStk_.push(0);
     return 1;
 }
 int CCPU::var_set_v (int arg_1, int arg_2)
 {
-    Memory_->VarStk_.set_val_at_id(arg_2, arg_1 + BPX_);
+    Memory->VarStk_.set_val_at_id(arg_2, arg_1 + BPX_);
 
     return 1;
 }
 int CCPU::var_pop_v (int arg_1, int arg_2)
 {
     int * ptr = get_reg_ptr(arg_2);
-    * ptr = (Memory_->VarStk_.get_val_at_id(arg_1 + BPX_));
+    * ptr = (Memory->VarStk_.get_val_at_id(arg_1 + BPX_));
 
     return 1;
 }
@@ -496,14 +497,14 @@ int CCPU::var_psh_v (int arg_1, int arg_2)
 {
     int * ptr = get_reg_ptr(arg_2);
 
-    Memory_->VarStk_.set_val_at_id(* ptr, arg_1 + BPX_);
+    Memory->VarStk_.set_val_at_id(* ptr, arg_1 + BPX_);
 
     return 1;
 }
 
 int CCPU::var_set_vf(int arg_1, int arg_2)
 {
-    Memory_->VarStk_.set_val_at_id(arg_2, arg_1 + BPX_);
+    Memory->VarStk_.set_val_at_id(arg_2, arg_1 + BPX_);
 
     return 1;
 }
@@ -511,14 +512,14 @@ int CCPU::var_set_vf(int arg_1, int arg_2)
 int CCPU::arg_psh (int arg_1)
 {
     int * ptr = get_reg_ptr(arg_1);
-    Memory_->ArgStk_.push(* ptr);
+    Memory->ArgStk_.push(* ptr);
 
     return 1;
 }
 int CCPU::arg_pop (int arg_1)
 {
     int * ptr = get_reg_ptr(arg_1);
-    * ptr = Memory_->ArgStk_.pop();
+    * ptr = Memory->ArgStk_.pop();
 
     return 1;
 }

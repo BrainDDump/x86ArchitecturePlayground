@@ -3,6 +3,7 @@
 #include "CStack.hpp"
 #include "CVarStack.hpp"
 #include "CCompiler.hpp"
+#include "CCash.hpp"
 #include "CMemBlock.hpp"
 #include "CCPU.hpp"
 
@@ -36,6 +37,7 @@ private:
 //------------------<< class objects >>-------------------------------------------
     CCompiler Compiler_;
     CCPU      CPU_;
+    CCash     Cash_;
     CMemBlock Memory_;
 };
 
@@ -65,19 +67,20 @@ int CMotherBoard::built_and_run(const char * input)
 
     Compiler_.dump();
 
-    if (!CPU_.set_Programm(Compiler_.MashineCode())) {
+    if (!Cash_.set_Cash_Programm(Compiler_.MashineCode())) {
         MotherBoardError = SET_PROGRAMM_FAILED;
         return 0;
     }
     printf("Programm set succsessfully\n");
 
+    CPU_.set_Cash_ptr   (& Cash_);
     CPU_.set_Memory_ptr (& Memory_);
 
-    /*if (!CPU_.check()) {
+    if (!CPU_.check()) {
         MotherBoardError = BAD_CPU_CONDITION;
         return 0;
     }
-    printf("CPU ready\n");*/
+    printf("CPU ready\n");
 
     if (!CPU_.execute()) {
         MotherBoardError = EXECUTION_FAILED;
