@@ -1,0 +1,203 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1344\cocoasubrtf720
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 SET 1  DX\
+SET 1  CX\
+SET 1  BX\
+\
+SCN AX INT\
+\
+$LOOP\
+\
+ADD CX BX\
+MUL BX DX\
+\
+CMP BX AX\
+JNE LOOP\
+\
+PRT DX INT\
+\
+STOP\
+\
+\
+//\'97\'97\'97\'97\'97\'97\'97\
+SET 1  DX\
+SET 1  CX\
+SET 1  BX\
+\
+DEC A INT\
+DEC B INT\
+DEC C INT\
+\
+SCN AX INT\
+\
+$LOOP\
+\
+ADD CX BX\
+MUL BX DX\
+\
+CALL func\
+\
+CMP BX AX\
+JNE LOOP\
+\
+PRT DX INT\
+\
+\
+JMP EXIT\
+\
+@func\
+\
+DEC P INT\
+DEC B INT\
+\
+RET\
+\
+$EXIT\
+STOP\
+\
+\
+//\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+DEC    A FLOAT\
+DEC    B FLOAT\
+\
+SET_VF B 5.55\
+SET_VF A 7.09\
+\
+POP_V A AX\
+POP_V B CX\
+\
+PSH   AX\
+PSH   CX\
+CALL  divide\
+\
+POP   EX\
+PRT   EX FLOAT\
+\
+PSH   CX\
+PSH   AX\
+CALL  divide\
+\
+POP   EX\
+PRT   EX FLOAT\
+\
+JMP   EXIT\
+@divide\
+\
+POP   EX\
+POP   FX\
+\
+DIV_F EX FX\
+\
+PSH   FX\
+\
+RET\
+\
+//\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+recurtion \
+DEC    A FLOAT\
+DEC    B FLOAT\
+\
+SET_F  DX 1000.4\
+\
+SET_VF B 1.05\
+SET_VF A 1.09\
+\
+POP_V A AX\
+POP_V B CX\
+\
+PSH   AX\
+PSH   CX\
+CALL  multiply\
+\
+JMP   EXIT\
+@multiply\
+DEC    A FLOAT\
+DEC   cxx FLOAT\
+\
+POP   EX\
+POP   FX\
+\
+PSH_V cxx EX\
+\
+MUL_F EX FX\
+\
+PRT   FX FLOAT\
+\
+CMP_F FX DX\
+JME   lable\
+\
+PSH   EX\
+PSH   FX\
+CALL  multiply\
+\
+$lable\
+\
+RET\
+\
+\
+$EXIT\
+STOP\
+\
+// \'97\'97\'97\'97\'97check all\'97\
+DEC    A FLOAT\
+DEC    B FLOAT\
+DEC    FT FLOAT\
+\
+SET_F  DX 1000.0\
+PRT    DX FLOAT\
+\
+SET_VF B 1.05\
+SET_VF A 1.09\
+\
+POP_V A AX\
+POP_V B CX\
+\
+PSH   AX\
+PSH   CX\
+CALL  multiply\
+\
+JMP   EXIT\
+\
+@multiply\
+\
+DEC   FT FLOAT\
+DEC   B FLOAT\
+DEC   gg INT\
+\
+SET_VF FT -3.7\
+SET_V  gg 7\
+\
+PSH_V  B  AX\
+POP_V  FT AX\
+PRT   AX  FLOAT\
+\
+SCN   AX  FLOAT\
+PRT   AX  FLOAT\
+\
+POP   EX\
+POP   FX\
+\
+MUL_F EX FX\
+\
+PRT   FX FLOAT\
+\
+CMP_F FX DX\
+JME   lable\
+\
+PSH   EX\
+PSH   FX\
+CALL  multiply\
+\
+$lable\
+\
+RET\
+\
+\
+$EXIT\
+STOP\
+\
+}

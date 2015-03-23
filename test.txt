@@ -1,0 +1,43 @@
+DEC    A FLOAT
+DEC    B FLOAT
+
+SET_F  DX 1000.4
+
+SET_VF B 1.05
+SET_VF A 1.09
+
+POP_V A AX
+POP_V B CX
+
+PSH   AX
+PSH   CX
+CALL  multiply
+
+JMP   EXIT
+@multiply
+DEC    A FLOAT
+DEC   cxx FLOAT
+
+POP   EX
+POP   FX
+
+PSH_V cxx EX
+
+MUL_F EX FX
+
+PRT   FX FLOAT
+
+CMP_F FX DX
+JME   lable
+
+PSH   EX
+PSH   FX
+CALL  multiply
+
+$lable
+
+RET
+
+
+$EXIT
+STOP
