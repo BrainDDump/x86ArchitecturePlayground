@@ -31,7 +31,6 @@ public:
 //------------------------<< Main execution method >>------------------------------
     int execute ();
 //------------------------<< Debug && Info >>--------------------------------------
-    int check ();
     int cpu_dump ();
 //------------------------<< Outer set methods >>----------------------------------
     int set_Cash_ptr (CCash * ptr);
@@ -171,11 +170,6 @@ int CCPU::execute()
 }
 
 //------------------------<< Debug && Info >>--------------------------------------
-int CCPU::check()
-{
-    
-}
-
 int CCPU::cpu_dump ()
 {
     printf("AX : %d\n", AX_);

@@ -76,12 +76,6 @@ int CMotherBoard::built_and_run(const char * input)
     CPU_.set_Cash_ptr   (& Cash_);
     CPU_.set_Memory_ptr (& Memory_);
 
-    if (!CPU_.check()) {
-        MotherBoardError = BAD_CPU_CONDITION;
-        return 0;
-    }
-    printf("CPU ready\n");
-
     if (!CPU_.execute()) {
         MotherBoardError = EXECUTION_FAILED;
         return 0;

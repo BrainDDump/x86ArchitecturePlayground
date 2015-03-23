@@ -67,12 +67,12 @@ if (!CONDITION)                             		\
     assert(0);                         			    \
 }                                      			    \
 
-//------------------<< CCompiler class >>-------------------------------------------------
-class CCompiler
+//------------------<< CNasm class >>-------------------------------------------------
+class CNasm
 {
 public:
-	CCompiler ();
-	~CCompiler();
+	CNasm ();
+	~CNasm();
 
 	int           read       (const char * input);
 	int           compile    ();
@@ -86,17 +86,17 @@ private:
 	vector<int>    MashineCode_;
 };
 
-CCompiler::CCompiler()
+CNasm::CNasm()
 {
     /*---//---*/
 }
 
-CCompiler::~CCompiler()
+CNasm::~CNasm()
 {
     /*---//---*/
 }
 
-int CCompiler::read(const char * input)
+int CNasm::read(const char * input)
 {
 	ifstream in(input);
 	string   buf_cmd;
@@ -117,7 +117,7 @@ int CCompiler::read(const char * input)
     return 1;
 }
 
-int CCompiler::compile()
+int CNasm::compile()
 {
     vector<lable>    lables;
     vector<func>     funcs;
@@ -399,12 +399,12 @@ int CCompiler::compile()
 }
 
 //------------------------<< private methods >>-------------------------------------------
-vector<int> * CCompiler::MashineCode()
+vector<int> * CNasm::MashineCode()
 {
 	return (& MashineCode_);
 }
 
-int CCompiler::get_reg_num (string reg)
+int CNasm::get_reg_num (string reg)
 {
     if (reg == "AX")   return 1;
     if (reg == "BX")   return 2;
@@ -418,9 +418,9 @@ int CCompiler::get_reg_num (string reg)
     return 0;
 }
 
-int CCompiler::dump()
+int CNasm::dump()
 {
-    printf("------COMPILER DUMP-------\n");
+    printf("------Nasm DUMP-------\n");
     for (int i = 0; i < ACMCode_.size(); ++i)
         cout << ACMCode_[i] << endl;
 
@@ -429,7 +429,7 @@ int CCompiler::dump()
     for (int i = 0; i < MashineCode_.size(); ++i)
         cout << MashineCode_[i] << ' ';
 
-    printf("---END OF COMPILER DUMP---\n");
+    printf("---END OF Nasm DUMP---\n");
 
     return 1;
 }
